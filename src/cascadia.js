@@ -10,7 +10,7 @@ export const Cascadia = {
   setup: function setup(foo) {
     let boards = {}
     for (let player of foo.ctx.playOrder) {
-      boards[player] = createEmptyBoard()
+      boards[player] = createInitialBoard()
     }
     let animalStack = intitialAnimals()
     let hexStack = initialHexCells()
@@ -67,6 +67,24 @@ export const Cascadia = {
       changeOfferingsWhere((_animal, index) => index in changeIndeces, G)
       G.pineCones[playerID] -= 1
     },
+    chooseFromOfferingAndPlaceOnBoard: ({ G, playerID }, offeringIndex, coordinatesHexPlacement, hexRotation, coordiantesAnimalPlacement, placeAnimal) => {
+      const[newHexX, newHexY] = coordinatesHexPlacement
+      if (!isAdjacentToBoard(G.boards[playerID], coordinatesHexPlacement)) return INVALID_MOVE
+
+      let chosenOffering = G.offering.pop(offeringIndex)
+      G.boards[playerID][newHexX][newHexY] = chosenOffering.cell
+      G.boards[playerID][newHexX][newHexY].coordinates = coordinatesHexPlacement
+
+      G.boards[playerID][newHexX][newHexY].rotation = hexRotation
+
+      if (!placeAnimal) return G
+      
+      if (!canAnimalBePlaced(G.boards[playerID], coordiantesAnimalPlacement, chosenOffering.animal)) return G
+      
+      G.boards[playerID][newHexX][newHexY].occupiedBy = chosenOffering.animal
+
+      return G
+    }
   }
 };
 
@@ -108,24 +126,9 @@ function initialHexCells() {
   return shuffle(cells)
 }
 
-function createEmptyBoard() {
-  let board = []
 
-  for (let x = 0; x <= 50; x++) {
-    board[x] = []
-    for (let y = 0; y <= 50; y++) {
-      board[x][y] = []
-      for (let z = 0; z <= 50; z++) {
-        board[x][y][z] = null
-      }
-    }
-  }
-
-  return board
-}
-
-function createHexCell(biomeA, biomeB, validAnimals, rotation = 0, occupiedBy = null) {
-  return {biomeA, biomeB, validAnimals, rotation, occupiedBy}
+function createHexCell(biomeA, biomeB, validAnimals, rotation = 0, occupiedBy = null, coordinates = null) {
+  return {biomeA, biomeB, validAnimals, rotation, occupiedBy, coordinates}
 }
 
 function shuffle(array) {
@@ -143,4 +146,55 @@ function shuffle(array) {
       array[randomIndex], array[currentIndex]];
   }
   return array;
+}
+
+function createInitialBoard() {
+  let board = []
+  for (let x = 0; x < 50; x++) {
+    board[x] = []
+    for (let y = 0; y < 50; y++) {
+      board[x][y] = null
+    }
+  }
+  board[24][24] = createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], coordinates = [24,24])
+  board[25][24] = createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear], coordinates = [25,24])
+  board[25][23] = createHexCell(biomes.forest, biomes.forest, [animals.deer], coordinates = [25,23])
+
+}
+
+function isAdjacentToBoard(board, coordinates) {
+  for (let row of board){
+    for (let item of row) {
+      if (item.coordinates == coordinates) {
+        return false
+      }
+      if (item == null) {
+        continue
+      }
+      if (isAdjacent(item.coordinates, coordinates)) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
+function canAnimalBePlaced(board, coordinates, animal) {
+  const [x, y] = coordinates
+  if (board[x][y] == null) return false
+
+  return board[x][y].validAnimals.includes(animal)
+}
+
+function isAdjacent(coordinatesA, coordinatesB) {
+  let xDistance = coordinatesA[0] - coordinatesB[0]
+  let yDistance = coordinatesA[1] - coordinatesB[1]
+
+  if (Math.abs(xDistance) > 1 && Math.abs(yDistance) > 1) {
+    return false
+  }
+  if ((xDistance > 0 && yDistance > 0) || (xDistance < 0 && yDistance < 0)) {
+    return false
+  }
+  return true
 }
