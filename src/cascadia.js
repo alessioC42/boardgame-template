@@ -1,7 +1,10 @@
+/** @import { Game } from "boardgame.io" */
+
 import { animals } from "./models/animals";
 import { biomes } from "./models/biomes";
 import { INVALID_MOVE } from 'boardgame.io/core';
 
+/**  @type {Game} */
 export const Cascadia = {
   // Tutorial things go here
   setup: function setup(foo) {
@@ -49,7 +52,7 @@ export const Cascadia = {
         }
         if (counter == 3) {
           changeOfferingsWhere(
-            function (animal) {
+            function (animal, _i) {
               return animal == lastAnimal
             }, G)
           return G
@@ -57,10 +60,13 @@ export const Cascadia = {
       }
       return INVALID_MOVE
     },
-    usePineConeForAnimalExchange: ({ G, playerID }) => {
-      if(pineCones[playerID]>0){}
+    usePineConeForAnimalExchange: ({ G, playerID }, changeIndeces) => {
+      if (pineCones[playerID] < 1) {
+        return INVALID_MOVE
+      }
+      changeOfferingsWhere((_animal, index) => index in changeIndeces, G)
+      pineCones[playerID] -= 1
     },
-    
   }
 };
 
@@ -68,14 +74,20 @@ export const Cascadia = {
 function changeOfferingsWhere(validation, G) {
   let killedAnimals = []
   for (let i = 0; i < 4; i++) {
-    if (validation(G.offering[i].animal)) {
+    if (validation(G.offering[i].animal, i)) {
       killedAnimals.push(G.offering[i])
       G.offering[i].animal = G.animalStack.pop()
     }
   }
   G.animalStack = shuffle(G.animalStack.concat(killedAnimals))
+  ensureNoOverpopulation()
 }
 
+function ensureNoOverpopulation(G) {
+  while (G.offering[0].animal == G.offering[1].animal && G.offering[2].animal == G.offering[3].animal && G.offering[1].animal == G.offering[2].animal) {
+    changeOfferingsWhere((_animal, _i) => true, G)
+  }
+}
 
 function intitialAnimals() {
   let animalsStack = []
