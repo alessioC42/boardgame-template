@@ -24,25 +24,7 @@ class GameClient {
   }
 
   update(state) {
-    // Get all the board cells.
-    const cells = this.rootElement.querySelectorAll(".cell");
-    // Update cells to display the values in game state.
-    cells.forEach((cell) => {
-      const cellId = parseInt(cell.dataset.id);
-      const cellValue = state.G.cells[cellId];
-      cell.textContent = cellValue !== null ? cellValue : "";
-    });
-    // Get the gameover message element.
-    const messageEl = this.rootElement.querySelector(".winner");
-    // Update the element to show a winner if any.
-    if (state.ctx.gameover) {
-      messageEl.textContent =
-        state.ctx.gameover.winner !== undefined
-          ? "Winner: " + state.ctx.gameover.winner
-          : "Draw!";
-    } else {
-      messageEl.textContent = "";
-    }
+    
   }
 
   createBoard() {

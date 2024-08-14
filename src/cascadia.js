@@ -5,7 +5,6 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 export const Cascadia = {
   // Tutorial things go here
   setup: function setup(foo) {
-    console.log(foo)
     let boards = {}
     for (let player of foo.ctx.playOrder) {
       boards[player] = createEmptyBoard()
@@ -13,42 +12,53 @@ export const Cascadia = {
     let animalStack = intitialAnimals()
     let hexStack = initialHexCells()
 
+    let pineCones = {}
+    for (let player of foo.ctx.playOrder) {
+      pineCones[player] = 0
+    }
+
     let offering = []
     for (let i = 0; i < 4; i++){
       offering.push({
         cell: hexStack.pop(),
-        animal: animalStack.pop()
+        animal: animals.bear//animalStack.pop()
       })
     }
-
-    return { boards, animalStack, hexStack, offering }
+    return { boards, animalStack, hexStack, offering, pineCones}
   },
   
   moves: {
-    changeAnimalOffering: ({ G }) => {
+    changeAnimalOffering: ( {G} ) => {
       let lastAnimal = null
       let counter
+      /*
+      We take two times the same list and appand them on one another, 
+      than we search three times the same number next to each other
+      */
       for (let item of G.offering.concat(G.offering)) {
-        if (lastAnimal = null) {
-          lastAnimal = item.animal
+        if (lastAnimal == null) {
+          lastAnimal = item.animal.toString()
           counter = 1
           continue
         }
-        if (lastAnimal = item.animal) {
+        if (lastAnimal == item.animal) {
           counter += 1
         } else {
           lastAnimal = item.animal
           counter = 1
         }
-        if (counter === 3) {
+        if (counter == 3) {
           changeOfferingsWhere(
             function (animal) {
-              return animal === lastAnimal
+              return animal == lastAnimal
             }, G)
           return G
         }
       }
       return INVALID_MOVE
+    },
+    usePineConeForAnimalExchange: ({ G, playerID }) => {
+      if(pineCones[playerID]>0){}
     },
     
   }
@@ -56,11 +66,11 @@ export const Cascadia = {
 
 
 function changeOfferingsWhere(validation, G) {
-  killedAnimals = []
+  let killedAnimals = []
   for (let i = 0; i < 4; i++) {
     if (validation(G.offering[i].animal)) {
       killedAnimals.push(G.offering[i])
-      G.offering[i] = G.animalStack.pop()
+      G.offering[i].animal = G.animalStack.pop()
     }
   }
   G.animalStack = shuffle(G.animalStack.concat(killedAnimals))
@@ -70,7 +80,9 @@ function changeOfferingsWhere(validation, G) {
 function intitialAnimals() {
   let animalsStack = []
   for (let animal in animals) {
-    animalsStack.concat(Array(20).fill(animal))
+    for (let i = 0; i < 20; i++) {
+      animalsStack.push(animals[animal])
+    }
   }
   return shuffle(animalsStack)
 }
