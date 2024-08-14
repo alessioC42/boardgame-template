@@ -17,7 +17,7 @@ export const Cascadia = {
 
     let pineCones = {}
     for (let player of foo.ctx.playOrder) {
-      pineCones[player] = 0
+      pineCones[player] = 2
     }
 
     let offering = []
@@ -61,11 +61,11 @@ export const Cascadia = {
       return INVALID_MOVE
     },
     usePineConeForAnimalExchange: ({ G, playerID }, changeIndeces) => {
-      if (pineCones[playerID] < 1) {
+      if (G.pineCones[playerID] < 1) {
         return INVALID_MOVE
       }
       changeOfferingsWhere((_animal, index) => index in changeIndeces, G)
-      pineCones[playerID] -= 1
+      G.pineCones[playerID] -= 1
     },
   }
 };
@@ -80,7 +80,7 @@ function changeOfferingsWhere(validation, G) {
     }
   }
   G.animalStack = shuffle(G.animalStack.concat(killedAnimals))
-  ensureNoOverpopulation()
+  ensureNoOverpopulation(G)
 }
 
 function ensureNoOverpopulation(G) {
