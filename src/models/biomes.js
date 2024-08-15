@@ -1,15 +1,15 @@
 export const biomes = {
     forest: {
-        color: "#006400"
+        color: "#00FF00"
     },
     mountains: {
-        color: "#808080"
+        color: "#dddddd"
     },
     desert: {
         color: "#FFA500"
     },
     grass: {
-        color: "#7CFC00"
+        color: "#7CFF00"
     },
     water: {
         color: "#0000FF"

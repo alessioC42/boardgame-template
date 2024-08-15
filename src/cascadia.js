@@ -146,8 +146,8 @@ function intitialAnimals() {
 function initialHexCells() {
   let cells = []
   cells.push(createHexCell(biomes.forest, biomes.water, [animals.deer, animals.bear]))
-  cells.push(createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear]))
-  cells.push(createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear]))
+  cells.push(createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 2))
+  cells.push(createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear], 4))
   cells.push(createHexCell(biomes.forest, biomes.forest, [animals.deer]))
   return shuffle(cells)
 }
