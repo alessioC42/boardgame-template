@@ -27,7 +27,7 @@ export const Cascadia = {
         animal: animals.bear//animalStack.pop()
       })
     }
-    return { boards, animalStack, hexStack, offering, pineCones}
+    return { boards, animalStack, hexStack, offering, pineCones, }
   },
   
   moves: {
@@ -67,6 +67,9 @@ export const Cascadia = {
       changeOfferingsWhere((_animal, index) => index in changeIndeces, G)
       G.pineCones[playerID] -= 1
     },
+    /**
+     * offeringIndex=4 when `usePineConeForCustomChoice` is used before
+     */
     chooseFromOfferingAndPlaceOnBoard: ({ G, playerID }, offeringIndex, coordinatesHexPlacement, hexRotation, coordiantesAnimalPlacement, placeAnimal) => {
       const[newHexX, newHexY] = coordinatesHexPlacement
       if (!isAdjacentToBoard(G.boards[playerID], coordinatesHexPlacement)) return INVALID_MOVE
@@ -86,6 +89,25 @@ export const Cascadia = {
       if (G.boards[playerID][newHexX][newHexY].validAnimals.length === 1) {
         G.pineCones[playerID] += 1
       }
+
+      return G
+    },
+    usePineConeForCustomChoice: ({ G, playerID }, hexIndex, animalIndex) => {
+      if (G.pineCones[playerID] < 1 || hexIndex > 3 || animalIndex > 3) {
+        return INVALID_MOVE
+      }
+
+      let animal, cell
+
+      //hex
+      cell = G.offering[hexIndex].cell
+      G.offering[hexIndex].cell = G.hexStack.pop()
+
+      //animal
+      animal = G.offering[animal].animal
+      G.offering[animal].animal = G.animalStack.pop()
+
+      G.offering[4] = { animal, cell }
 
       return G
     }
@@ -160,12 +182,9 @@ function createInitialBoard() {
       board[x][y] = null
     }
   }
-  // eslint-disable-next-line no-undef
-  board[24][24] = createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], coordinates=[24,24])
-  // eslint-disable-next-line no-undef
-  board[25][24] = createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear], coordinates = [25,24])
-  // eslint-disable-next-line no-undef
-  board[25][23] = createHexCell(biomes.forest, biomes.forest, [animals.deer], coordinates = [25,23])
+  board[24][24] = createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 0, null, [24,24])
+  board[25][24] = createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear], 0, null, [25,24])
+  board[25][23] = createHexCell(biomes.forest, biomes.forest, [animals.deer], 0, null, [25,23])
 
 }
 
