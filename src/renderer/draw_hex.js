@@ -1,15 +1,16 @@
+import { animals } from '../models/animals';
 import {config} from './config'
 
 export function drawHex(ctx, hex, x, y) {
     ctx.translate(x, y);
 
-    const tralsateRotation = (Math.PI / 3) * hex.rotation;
+    let translateRotation = (Math.PI / 3) * hex.rotation;
 
-    const grad=ctx.createLinearGradient(-config.hexRadius, 0, config.hexRadius, 0 );
+    let grad=ctx.createLinearGradient(-config.hexRadius, 0, config.hexRadius, 0 );
     grad.addColorStop(0, hex.biomeA.color);
     grad.addColorStop(1, hex.biomeB.color);
 
-    ctx.rotate(tralsateRotation)
+    ctx.rotate(translateRotation)
 
 
     for (let i = 0; i < 6; i++) {
@@ -31,12 +32,52 @@ export function drawHex(ctx, hex, x, y) {
 
     ctx.closePath();
     ctx.stroke();
-    ctx.translate(0, 0);
+    
+    ctx.rotate(-translateRotation)
+    
+    if (hex.occupiedBy == null) {
+        drawValidAnimals(ctx, hex.validAnimals)
+    } else {
+        drawOccupyingAnimal(ctx, hex.occupiedBy)
+    }
+    ctx.translate(-x, -y);
 }
 
+
 export function drawHexByOwnCoordinates(ctx, hex) {
-
+    
     //todo: get x and y
+    let x = 800 + (24 - hex.coordinates[0]) * config.canvasXDistance + 0.5 * (24 - hex.coordinates[1]) * config.canvasXDistance
+    let y = 800 + (24 - hex.coordinates[1]) * config.canvasYDistance 
+    console.log(x, y)
+    drawHex(ctx, hex, x, y)
+}
 
-    drawHex(ctx, hex)
+export function drawValidAnimals(ctx, validAnimals) {
+    for (let i = 0; i < validAnimals.length; i++) {
+        let y = i*16-  validAnimals.length*8
+        let string = validAnimals[i].displayName
+        ctx.fillStyle = "black"
+        ctx.font = "16px serif"
+        ctx.textAlign = "center"
+        ctx.fillText(string, 0, y)
+        console.log("drawAnimal", string)
+    }
+
+}
+
+export function drawOccupyingAnimal(ctx, occupiedBy) {
+    ctx.fillStyle = occupiedBy.color
+    ctx.beginPath()
+    ctx.arc(0, 0, config.hexRadius * 0.5, 0, 2 * Math.PI)
+    ctx.fill()
+    ctx.strokeStyle = "black"
+    ctx.stroke()
+
+    ctx.fillStyle = "white"
+    ctx.font = "12px serif"
+    ctx.textAlign = "center"
+    ctx.fillText(occupiedBy.displayName, 0, 0)
+    
+    console.log("occupiedAnimal")
 }

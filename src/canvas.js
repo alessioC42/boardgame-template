@@ -1,4 +1,4 @@
-const canvas = document.getElementById("canvas");
+export const canvas = document.getElementById("canvas");
 export const ctx = canvas.getContext("2d");
 // { x,y, height, width, handler)
 const handlers = [];

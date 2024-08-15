@@ -145,7 +145,7 @@ function intitialAnimals() {
 
 function initialHexCells() {
   let cells = []
-  cells.push(createHexCell(biomes.forest, biomes.water, [animals.deer, animals.bear]))
+  cells.push(createHexCell(biomes.forest, biomes.water, [animals.deer, animals.bear, animals.bird]))
   cells.push(createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 2))
   cells.push(createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear], 4))
   cells.push(createHexCell(biomes.forest, biomes.forest, [animals.deer]))
@@ -153,7 +153,7 @@ function initialHexCells() {
 }
 
 
-function createHexCell(biomeA, biomeB, validAnimals, rotation = 0, occupiedBy = null, coordinates = null) {
+function createHexCell(biomeA, biomeB, validAnimals, rotation = 0, occupiedBy = animals.bird, coordinates = null) {
   return {biomeA, biomeB, validAnimals, rotation, occupiedBy, coordinates}
 }
 
@@ -185,7 +185,7 @@ function createInitialBoard() {
   board[24][24] = createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 0, null, [24,24])
   board[25][24] = createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear], 0, null, [25,24])
   board[25][23] = createHexCell(biomes.forest, biomes.forest, [animals.deer], 0, null, [25,23])
-
+  return board
 }
 
 function isAdjacentToBoard(board, coordinates) {
