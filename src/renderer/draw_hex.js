@@ -2,6 +2,7 @@ import { animals } from '../models/animals';
 import {config} from './config'
 
 export function drawHex(ctx, hex, x, y) {
+    
     ctx.translate(x, y);
 
     let translateRotation = (Math.PI / 3) * hex.rotation;
@@ -11,7 +12,7 @@ export function drawHex(ctx, hex, x, y) {
     grad.addColorStop(1, hex.biomeB.color);
 
     ctx.rotate(translateRotation)
-
+    ctx.beginPath()
 
     for (let i = 0; i < 6; i++) {
         // calculate the rotation
@@ -41,6 +42,7 @@ export function drawHex(ctx, hex, x, y) {
         drawOccupyingAnimal(ctx, hex.occupiedBy)
     }
     ctx.translate(-x, -y);
+   
 }
 
 
