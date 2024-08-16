@@ -1,7 +1,6 @@
 import { Client } from "boardgame.io/client";
 import { Local, SocketIO } from "boardgame.io/multiplayer";
 import { resetOnClicks } from "./canvas";
-import { Game } from "./Game";
 import { Debug } from "boardgame.io/debug";
 import { Cascadia } from "./cascadia";
 
@@ -30,6 +29,8 @@ class GameClient {
     this.client.subscribe((state) => this.update(state));
     this.client.start();
   }
+
+  update() {}
 }
 
 const appElement = document.getElementById("app");
