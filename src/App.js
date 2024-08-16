@@ -1,14 +1,16 @@
 import { Client } from "boardgame.io/client";
 import { Local, SocketIO } from "boardgame.io/multiplayer";
-import { resetOnClicks, ctx, onClick} from "./canvas";
+import { resetOnClicks } from "./canvas";
+import { Game } from "./Game";
+import { Debug } from "boardgame.io/debug";
 import { Cascadia } from "./cascadia";
-import { render } from "./renderer/renderer";
 
 const isMultiplayer = import.meta.env.VITE_REMOTE === "true";
+const multiplayerServer =
+  import.meta.env.VITE_MUTLIPLAYER_SERVER ?? "localhost:8000";
 
-// eslint-disable-next-line no-unused-vars
 const multiplayer = isMultiplayer
-  ? SocketIO({ server: "localhost:8000" })
+  ? SocketIO({ server: multiplayerServer })
   : Local();
 
 class GameClient {
@@ -17,9 +19,15 @@ class GameClient {
 
     this.client = Client({
       game: Cascadia,
+      multiplayer: isMultiplayer ? multiplayer : undefined,
+      debug: {
+        collapseOnLoad: false,
+        hideToggleButton: false,
+        impl: Debug,
+      },
     });
 
-    this.client.subscribe((state) => render(state, ctx, resetOnClicks, onClick));
+    this.client.subscribe((state) => this.update(state));
     this.client.start();
   }
 }
