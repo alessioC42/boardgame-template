@@ -30,28 +30,65 @@ export function drawHex(ctx, hex, x, y) {
 
     ctx.fillStyle = grad;
     ctx.fill();
-
     ctx.closePath();
     ctx.stroke();
     
     ctx.rotate(-translateRotation)
     
+    console.log(hex.occupiedBy)
     if (hex.occupiedBy == null) {
         drawValidAnimals(ctx, hex.validAnimals)
     } else {
         drawOccupyingAnimal(ctx, hex.occupiedBy)
     }
+    drawCoordinates(ctx, hex.coordinates)
     ctx.translate(-x, -y);
    
+}
+
+function drawCoordinates(ctx, coordinates) {
+    ctx.fillStyle = "black"
+    ctx.font = "10px serif"
+    ctx.textAlign = "center"
+    ctx.fillText(coordinates, 0, config.hexRadius - 8)
+}
+
+export function drawHexOutline(ctx, x, y, displayCoordinates) {
+    ctx.translate(x, y);
+
+    ctx.beginPath()
+    for (let i = 0; i < 6; i++) {
+        // calculate the rotation
+        const rotation = (Math.PI / 3) * i - Math.PI/6;
+        if (i === 0) {
+            ctx.moveTo(config.hexRadius * Math.cos(rotation), config.hexRadius * Math.sin(rotation));
+        } else {
+            ctx.lineTo(config.hexRadius * Math.cos(rotation), config.hexRadius * Math.sin(rotation));
+        }
+    }
+
+    ctx.closePath();
+    ctx.stroke();
+    
+    drawCoordinates(ctx, displayCoordinates)
+    ctx.translate(-x, -y);
+   
+}
+
+export function drawHexOutlineByOwnCoordinates(ctx, coordinates) {
+    
+    //todo: get x and y
+    let x = config.boardWidth / 2 + (24 - coordinates[0]) * config.canvasXDistance + 0.5 * (24 - coordinates[1]) * config.canvasXDistance
+    let y = config.boardHeight / 2 + (24 - coordinates[1]) * config.canvasYDistance 
+    drawHexOutline(ctx, x, y, coordinates )
 }
 
 
 export function drawHexByOwnCoordinates(ctx, hex) {
     
     //todo: get x and y
-    let x = 800 + (24 - hex.coordinates[0]) * config.canvasXDistance + 0.5 * (24 - hex.coordinates[1]) * config.canvasXDistance
-    let y = 800 + (24 - hex.coordinates[1]) * config.canvasYDistance 
-    console.log(x, y)
+    let x = config.boardWidth / 2 + (24 - hex.coordinates[0]) * config.canvasXDistance + 0.5 * (24 - hex.coordinates[1]) * config.canvasXDistance
+    let y = config.boardHeight / 2 + (24 - hex.coordinates[1]) * config.canvasYDistance 
     drawHex(ctx, hex, x, y)
 }
 
@@ -63,7 +100,6 @@ export function drawValidAnimals(ctx, validAnimals) {
         ctx.font = "16px serif"
         ctx.textAlign = "center"
         ctx.fillText(string, 0, y)
-        console.log("drawAnimal", string)
     }
 
 }
@@ -81,5 +117,4 @@ export function drawOccupyingAnimal(ctx, occupiedBy) {
     ctx.textAlign = "center"
     ctx.fillText(occupiedBy.displayName, 0, 0)
     
-    console.log("occupiedAnimal")
 }

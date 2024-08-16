@@ -1,8 +1,9 @@
 import { Client } from "boardgame.io/client";
 import { Local, SocketIO } from "boardgame.io/multiplayer";
-import { resetOnClicks } from "./canvas";
+import { onClick, resetOnClicks, ctx } from "./canvas";
 import { Debug } from "boardgame.io/debug";
 import { Cascadia } from "./cascadia";
+import { render } from "./renderer/renderer";
 
 const isMultiplayer = import.meta.env.VITE_REMOTE === "true";
 const multiplayerServer =
@@ -26,11 +27,10 @@ class GameClient {
       },
     });
 
-    this.client.subscribe((state) => this.update(state));
+    this.client.subscribe((state) => render(state, ctx, resetOnClicks, onClick));
     this.client.start();
   }
 
-  update() {}
 }
 
 const appElement = document.getElementById("app");

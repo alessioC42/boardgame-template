@@ -17,14 +17,14 @@ export const Cascadia = {
 
     let pineCones = {}
     for (let player of foo.ctx.playOrder) {
-      pineCones[player] = 2
+      pineCones[player] = 200
     }
 
     let offering = []
     for (let i = 0; i < 4; i++){
       offering.push({
         cell: hexStack.pop(),
-        animal: animals.bear//animalStack.pop()
+        animal: animalStack.pop()
       })
     }
     return { boards, animalStack, hexStack, offering, pineCones, }
@@ -68,28 +68,34 @@ export const Cascadia = {
       G.pineCones[playerID] -= 1
     },
     /**
-     * offeringIndex=4 when `usePineConeForCustomChoice` is used before
+     * offeringIndex=4 when `usePineConeForCustomChoice` is used before        0, [23,24], 2, [23,24], true
      */
     chooseFromOfferingAndPlaceOnBoard: ({ G, playerID }, offeringIndex, coordinatesHexPlacement, hexRotation, coordiantesAnimalPlacement, placeAnimal) => {
       const[newHexX, newHexY] = coordinatesHexPlacement
       if (!isAdjacentToBoard(G.boards[playerID], coordinatesHexPlacement)) return INVALID_MOVE
 
-      let chosenOffering = G.offering.pop(offeringIndex)
+      let chosenOffering = G.offering[offeringIndex]
+      console.log(JSON.stringify(chosenOffering))
+      G.offering[offeringIndex] = {cell: G.hexStack.pop(), animal: G.animalStack.pop()}
+
       G.boards[playerID][newHexX][newHexY] = chosenOffering.cell
       G.boards[playerID][newHexX][newHexY].coordinates = coordinatesHexPlacement
 
       G.boards[playerID][newHexX][newHexY].rotation = hexRotation
 
       if (!placeAnimal) return G
+      console.log(JSON.stringify(G.boards[playerID][coordiantesAnimalPlacement[0]][coordiantesAnimalPlacement[1]]))
+      if (!canAnimalBePlaced(G.boards[playerID], coordiantesAnimalPlacement, chosenOffering.animal)) {
+        return G
+      }
       
-      if (!canAnimalBePlaced(G.boards[playerID], coordiantesAnimalPlacement, chosenOffering.animal)) return G
+      const[newAnimalX, newAnimalY] = coordiantesAnimalPlacement
+
+      G.boards[playerID][newAnimalX][newAnimalY].occupiedBy = chosenOffering.animal
       
-      G.boards[playerID][newHexX][newHexY].occupiedBy = chosenOffering.animal
-      
-      if (G.boards[playerID][newHexX][newHexY].validAnimals.length === 1) {
+      if (G.boards[playerID][newAnimalX][newAnimalY].validAnimals.length === 1) {
         G.pineCones[playerID] += 1
       }
-
       return G
     },
     usePineConeForCustomChoice: ({ G, playerID }, hexIndex, animalIndex) => {
@@ -117,14 +123,16 @@ export const Cascadia = {
 
 function changeOfferingsWhere(validation, G) {
   let killedAnimals = []
+  console.log(JSON.stringify(G.offering))
   for (let i = 0; i < 4; i++) {
     if (validation(G.offering[i].animal, i)) {
-      killedAnimals.push(G.offering[i])
+      killedAnimals.push(G.offering[i].animal)
       G.offering[i].animal = G.animalStack.pop()
     }
   }
   G.animalStack = shuffle(G.animalStack.concat(killedAnimals))
   ensureNoOverpopulation(G)
+  console.log(JSON.stringify(G.offering.map((animal)=>animal.animal)))
 }
 
 function ensureNoOverpopulation(G) {
@@ -149,11 +157,23 @@ function initialHexCells() {
   cells.push(createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 2))
   cells.push(createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear], 4))
   cells.push(createHexCell(biomes.forest, biomes.forest, [animals.deer]))
+  cells.push(createHexCell(biomes.forest, biomes.water, [animals.deer, animals.bear, animals.bird]))
+  cells.push(createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 2))
+  cells.push(createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear], 4))
+  cells.push(createHexCell(biomes.forest, biomes.forest, [animals.deer]))
+  cells.push(createHexCell(biomes.forest, biomes.water, [animals.deer, animals.bear, animals.bird]))
+  cells.push(createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 2))
+  cells.push(createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear], 4))
+  cells.push(createHexCell(biomes.forest, biomes.forest, [animals.deer]))
+  cells.push(createHexCell(biomes.forest, biomes.water, [animals.deer, animals.bear, animals.bird]))
+  cells.push(createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 2))
+  cells.push(createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear], 4))
+  cells.push(createHexCell(biomes.forest, biomes.forest, [animals.deer]))
   return shuffle(cells)
 }
 
 
-function createHexCell(biomeA, biomeB, validAnimals, rotation = 0, occupiedBy = animals.bird, coordinates = null) {
+function createHexCell(biomeA, biomeB, validAnimals, rotation = 0, occupiedBy = null, coordinates = null) {
   return {biomeA, biomeB, validAnimals, rotation, occupiedBy, coordinates}
 }
 
@@ -184,18 +204,19 @@ function createInitialBoard() {
   }
   board[24][24] = createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 0, null, [24,24])
   board[25][24] = createHexCell(biomes.water, biomes.mountains, [animals.deer, animals.bear], 0, null, [25,24])
-  board[25][23] = createHexCell(biomes.forest, biomes.forest, [animals.deer], 0, null, [25,23])
+  board[25][23] = createHexCell(biomes.forest, biomes.forest, [animals.deer], 0, null, [25, 23])
+  board[26][24] = createHexCell(biomes.forest, biomes.water, [animals.fish], 0, animals.fish, [26,24])
   return board
 }
 
-function isAdjacentToBoard(board, coordinates) {
+export function isAdjacentToBoard(board, coordinates) {
   for (let row of board){
     for (let item of row) {
-      if (item.coordinates == coordinates) {
-        return false
-      }
       if (item == null) {
         continue
+      }
+      if (item.coordinates[0] == coordinates[0] && item.coordinates[1] == coordinates[1] ) {
+        return false
       }
       if (isAdjacent(item.coordinates, coordinates)) {
         return true
@@ -207,16 +228,18 @@ function isAdjacentToBoard(board, coordinates) {
 
 function canAnimalBePlaced(board, coordinates, animal) {
   const [x, y] = coordinates
+  console.log(JSON.stringify(board[x][y]))
   if (board[x][y] == null) return false
 
-  return board[x][y].validAnimals.includes(animal)
+
+  return board[x][y].validAnimals.some((item) => item.displayName == animal.displayName)
 }
 
 function isAdjacent(coordinatesA, coordinatesB) {
   let xDistance = coordinatesA[0] - coordinatesB[0]
   let yDistance = coordinatesA[1] - coordinatesB[1]
 
-  if (Math.abs(xDistance) > 1 && Math.abs(yDistance) > 1) {
+  if (Math.abs(xDistance) > 1 || Math.abs(yDistance) > 1) {
     return false
   }
   if ((xDistance > 0 && yDistance > 0) || (xDistance < 0 && yDistance < 0)) {
