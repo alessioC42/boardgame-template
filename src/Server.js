@@ -1,9 +1,12 @@
-import { Server, Origins } from "boardgame.io/server";
-import { Game } from "./Game";
+import { Server } from "boardgame.io/server";
+import serve from "koa-static";
+import { Cascadia } from "./cascadia";
 
 const server = Server({
-  games: [Game],
+  games: [Cascadia],
   origins: [/.*/],
 });
 
-server.run(8000);
+server.app.use(serve("dist"));
+
+server.run(process.env.PORT ?? 8000);
