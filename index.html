@@ -41,10 +41,10 @@
         gap: 12px;
       }
 
-      #match-id {
+      .overlay {
         position: fixed;
-        top: 0;
-        right: 0;
+        bottom: 0;
+        left: 0;
         padding: 8px;
         background-color: #333;
         color: #fff;
@@ -60,6 +60,7 @@
       <div class="join">
         <input
           type="text"
+          id="join-match-id"
           name="join-match-id"
           placeholder="Match ID Eingeben"
         />
@@ -72,7 +73,11 @@
       <canvas id="canvas" width="1400" height="800"></canvas>
     </div>
 
-    <div id="match-id" class="hidden"></div>
+    <div id="overlay" class="overlay hidden">
+      <div id="match-id"></div>
+      <button id="quit" type="button">Quit</button>
+    </div>
+
     <script type="module" src="./src/App.js"></script>
   </body>
 </html>
