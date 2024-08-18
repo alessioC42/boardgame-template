@@ -13,6 +13,17 @@ export function render(state, ctx, resetOnClicks, client) {
   ctx.fillStyle = "white"
   ctx.fillRect(0, 0, config.boardWidth, config.boardHeight)
 
+  // draw ActivePlayer Label
+
+  ctx.fillStyle = "black"
+  ctx.font = "30px serif"
+  ctx.textAlign = "left"
+  ctx.fillText(
+    `Player: ${state.ctx.currentPlayer}`,
+    50,
+    config.boardHeight - 25
+  )
+
   let chooseFromOfferingAndPlaceOnBoardState = {
     selectedOffering: null,
     newHexCoordinates: null,
@@ -43,6 +54,7 @@ export function render(state, ctx, resetOnClicks, client) {
         hex.coordinates,
         false
       )
+      client.events.endTurn()
       return
     }
     client.moves.chooseFromOfferingAndPlaceOnBoard(
@@ -52,17 +64,23 @@ export function render(state, ctx, resetOnClicks, client) {
       hex.coordinates,
       true
     )
+    client.events.endTurn()
   }
 
   resetOnClicks()
   //renders board on canvas
-  for (let x = 0; x < state.G.boards["0"].length; x++) {
-    for (let y = 0; y < state.G.boards["0"].length; y++) {
-      if (state.G.boards["0"][x][y] !== null) {
-        drawHexByOwnCoordinates(ctx, state.G.boards["0"][x][y], () =>
-          renderedHexCallback(state.G.boards["0"][x][y])
+  for (let x = 0; x < state.G.boards[state.ctx.currentPlayer].length; x++) {
+    for (let y = 0; y < state.G.boards[state.ctx.currentPlayer].length; y++) {
+      if (state.G.boards[state.ctx.currentPlayer][x][y] !== null) {
+        drawHexByOwnCoordinates(
+          ctx,
+          state.G.boards[state.ctx.currentPlayer][x][y],
+          () =>
+            renderedHexCallback(state.G.boards[state.ctx.currentPlayer][x][y])
         )
-      } else if (isAdjacentToBoard(state.G.boards["0"], [x, y])) {
+      } else if (
+        isAdjacentToBoard(state.G.boards[state.ctx.currentPlayer], [x, y])
+      ) {
         drawHexOutlineByOwnCoordinates(ctx, [x, y], () => {
           if (chooseFromOfferingAndPlaceOnBoardState.selectedOffering == null) {
             alert("No offering selected")

@@ -354,7 +354,7 @@ function canAnimalBePlaced(board, coordinates, animal) {
   )
 }
 
-function isAdjacent(coordinatesA, coordinatesB) {
+export function isAdjacent(coordinatesA, coordinatesB) {
   let xDistance = coordinatesA[0] - coordinatesB[0]
   let yDistance = coordinatesA[1] - coordinatesB[1]
 
@@ -365,4 +365,16 @@ function isAdjacent(coordinatesA, coordinatesB) {
     return false
   }
   return true
+}
+
+export function getNeighbourCoordinates(coordinates) {
+  const [x, y] = coordinates
+  return [
+    [x + 1, y],
+    [x - 1, y],
+    [x, y + 1],
+    [x, y - 1],
+    [x + 1, y - 1],
+    [x - 1, y + 1],
+  ]
 }
