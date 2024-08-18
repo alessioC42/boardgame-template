@@ -75,7 +75,7 @@ export const Cascadia = {
       coordinatesHexPlacement,
       hexRotation,
       coordiantesAnimalPlacement,
-      placeAnimal,
+      placeAnimal
     ) => {
       const [newHexX, newHexY] = coordinatesHexPlacement
       if (!isAdjacentToBoard(G.boards[playerID], coordinatesHexPlacement))
@@ -98,14 +98,14 @@ export const Cascadia = {
         JSON.stringify(
           G.boards[playerID][coordiantesAnimalPlacement[0]][
             coordiantesAnimalPlacement[1]
-          ],
-        ),
+          ]
+        )
       )
       if (
         !canAnimalBePlaced(
           G.boards[playerID],
           coordiantesAnimalPlacement,
-          chosenOffering.animal,
+          chosenOffering.animal
         )
       ) {
         return G
@@ -186,23 +186,18 @@ function initialHexCells() {
       animals.deer,
       animals.bear,
       animals.bird,
-    ]),
+    ])
   )
   cells.push(
-    createHexCell(
-      biomes.forest,
-      biomes.desert,
-      [animals.deer, animals.bear],
-      2,
-    ),
+    createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 2)
   )
   cells.push(
     createHexCell(
       biomes.water,
       biomes.mountains,
       [animals.deer, animals.bear],
-      4,
-    ),
+      4
+    )
   )
   cells.push(createHexCell(biomes.forest, biomes.forest, [animals.deer]))
   cells.push(
@@ -210,23 +205,18 @@ function initialHexCells() {
       animals.deer,
       animals.bear,
       animals.bird,
-    ]),
+    ])
   )
   cells.push(
-    createHexCell(
-      biomes.forest,
-      biomes.desert,
-      [animals.deer, animals.bear],
-      2,
-    ),
+    createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 2)
   )
   cells.push(
     createHexCell(
       biomes.water,
       biomes.mountains,
       [animals.deer, animals.bear],
-      4,
-    ),
+      4
+    )
   )
   cells.push(createHexCell(biomes.forest, biomes.forest, [animals.deer]))
   cells.push(
@@ -234,23 +224,18 @@ function initialHexCells() {
       animals.deer,
       animals.bear,
       animals.bird,
-    ]),
+    ])
   )
   cells.push(
-    createHexCell(
-      biomes.forest,
-      biomes.desert,
-      [animals.deer, animals.bear],
-      2,
-    ),
+    createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 2)
   )
   cells.push(
     createHexCell(
       biomes.water,
       biomes.mountains,
       [animals.deer, animals.bear],
-      4,
-    ),
+      4
+    )
   )
   cells.push(createHexCell(biomes.forest, biomes.forest, [animals.deer]))
   cells.push(
@@ -258,23 +243,18 @@ function initialHexCells() {
       animals.deer,
       animals.bear,
       animals.bird,
-    ]),
+    ])
   )
   cells.push(
-    createHexCell(
-      biomes.forest,
-      biomes.desert,
-      [animals.deer, animals.bear],
-      2,
-    ),
+    createHexCell(biomes.forest, biomes.desert, [animals.deer, animals.bear], 2)
   )
   cells.push(
     createHexCell(
       biomes.water,
       biomes.mountains,
       [animals.deer, animals.bear],
-      4,
-    ),
+      4
+    )
   )
   cells.push(createHexCell(biomes.forest, biomes.forest, [animals.deer]))
   return shuffle(cells)
@@ -286,7 +266,7 @@ function createHexCell(
   validAnimals,
   rotation = 0,
   occupiedBy = null,
-  coordinates = null,
+  coordinates = null
 ) {
   return { biomeA, biomeB, validAnimals, rotation, occupiedBy, coordinates }
 }
@@ -323,7 +303,7 @@ function createInitialBoard() {
     [animals.deer, animals.bear],
     0,
     null,
-    [24, 24],
+    [24, 24]
   )
   board[25][24] = createHexCell(
     biomes.water,
@@ -331,7 +311,7 @@ function createInitialBoard() {
     [animals.deer, animals.bear],
     0,
     null,
-    [25, 24],
+    [25, 24]
   )
   board[25][23] = createHexCell(
     biomes.forest,
@@ -339,15 +319,7 @@ function createInitialBoard() {
     [animals.deer],
     0,
     null,
-    [25, 23],
-  )
-  board[26][24] = createHexCell(
-    biomes.forest,
-    biomes.water,
-    [animals.fish],
-    0,
-    animals.fish,
-    [26, 24],
+    [25, 23]
   )
   return board
 }
@@ -378,7 +350,7 @@ function canAnimalBePlaced(board, coordinates, animal) {
   if (board[x][y] == null) return false
 
   return board[x][y].validAnimals.some(
-    (item) => item.displayName == animal.displayName,
+    (item) => item.displayName == animal.displayName
   )
 }
 

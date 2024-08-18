@@ -1,6 +1,6 @@
 import { Client, LobbyClient } from "boardgame.io/client"
 import { Local, SocketIO } from "boardgame.io/multiplayer"
-import { onClick, resetOnClicks, ctx } from "./canvas"
+import { resetOnClicks, ctx } from "./canvas"
 import { Debug } from "boardgame.io/debug"
 import { Cascadia } from "./cascadia"
 import { render } from "./renderer/renderer"
@@ -40,7 +40,7 @@ class GameClient {
 
     this.client.subscribe((state) => {
       if (state == null) return
-      render(state, ctx, resetOnClicks, onClick)
+      render(state, ctx, resetOnClicks, this.client)
     })
     this.client.start()
   }
