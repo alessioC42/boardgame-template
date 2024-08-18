@@ -9,6 +9,10 @@
     "frontend": "vite --host 0.0.0.0 --port 3000 --open",
     "server": "tsx --watch ./src/Server.js"
   },
+  "prettier": {
+    "semi": false,
+    "tabWidth": 2
+  },
   "dependencies": {
     "boardgame.io": "0.50.2",
     "concurrently": "8.2.2",
