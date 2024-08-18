@@ -1,7 +1,8 @@
 import { animals } from "../models/animals"
 import { config } from "./config"
+import { onClick } from "../canvas"
 
-export function drawHex(ctx, hex, x, y) {
+export function drawHex(ctx, hex, x, y, callback, isGrey = false) {
   ctx.translate(x, y)
 
   let translateRotation = (Math.PI / 3) * hex.rotation
@@ -21,13 +22,13 @@ export function drawHex(ctx, hex, x, y) {
     if (i === 0) {
       ctx.moveTo(
         config.hexRadius * Math.cos(rotation),
-        config.hexRadius * Math.sin(rotation),
+        config.hexRadius * Math.sin(rotation)
       )
     } else {
       // for the rest draw a line
       ctx.lineTo(
         config.hexRadius * Math.cos(rotation),
-        config.hexRadius * Math.sin(rotation),
+        config.hexRadius * Math.sin(rotation)
       )
     }
   }
@@ -35,6 +36,10 @@ export function drawHex(ctx, hex, x, y) {
 
   ctx.fillStyle = grad
   ctx.fill()
+  if (isGrey) {
+    ctx.fillStyle = "rgba(255, 255, 255, 0.65)"
+    ctx.fill()
+  }
   ctx.closePath()
   ctx.stroke()
 
@@ -47,6 +52,10 @@ export function drawHex(ctx, hex, x, y) {
     drawOccupyingAnimal(ctx, hex.occupiedBy)
   }
   drawCoordinates(ctx, hex.coordinates)
+
+  const size = [config.hexRadius, config.hexRadius / 2]
+  onClick(x - size[0] / 2, y - size[1] / 2, size[0], size[1], callback)
+
   ctx.translate(-x, -y)
 }
 
@@ -57,7 +66,7 @@ function drawCoordinates(ctx, coordinates) {
   ctx.fillText(coordinates, 0, config.hexRadius - 8)
 }
 
-export function drawHexOutline(ctx, x, y, displayCoordinates) {
+export function drawHexOutline(ctx, x, y, displayCoordinates, callback) {
   ctx.translate(x, y)
 
   ctx.beginPath()
@@ -67,12 +76,12 @@ export function drawHexOutline(ctx, x, y, displayCoordinates) {
     if (i === 0) {
       ctx.moveTo(
         config.hexRadius * Math.cos(rotation),
-        config.hexRadius * Math.sin(rotation),
+        config.hexRadius * Math.sin(rotation)
       )
     } else {
       ctx.lineTo(
         config.hexRadius * Math.cos(rotation),
-        config.hexRadius * Math.sin(rotation),
+        config.hexRadius * Math.sin(rotation)
       )
     }
   }
@@ -80,11 +89,15 @@ export function drawHexOutline(ctx, x, y, displayCoordinates) {
   ctx.closePath()
   ctx.stroke()
 
+  const size = [config.hexRadius, config.hexRadius / 2]
+  if (callback != null)
+    onClick(x - size[0] / 2, y - size[1] / 2, size[0], size[1], callback)
+
   drawCoordinates(ctx, displayCoordinates)
   ctx.translate(-x, -y)
 }
 
-export function drawHexOutlineByOwnCoordinates(ctx, coordinates) {
+export function drawHexOutlineByOwnCoordinates(ctx, coordinates, callback) {
   //todo: get x and y
   let x =
     config.boardWidth / 2 +
@@ -92,10 +105,10 @@ export function drawHexOutlineByOwnCoordinates(ctx, coordinates) {
     0.5 * (24 - coordinates[1]) * config.canvasXDistance
   let y =
     config.boardHeight / 2 + (24 - coordinates[1]) * config.canvasYDistance
-  drawHexOutline(ctx, x, y, coordinates)
+  drawHexOutline(ctx, x, y, coordinates, callback)
 }
 
-export function drawHexByOwnCoordinates(ctx, hex) {
+export function drawHexByOwnCoordinates(ctx, hex, callback, isGrey = false) {
   //todo: get x and y
   let x =
     config.boardWidth / 2 +
@@ -103,7 +116,7 @@ export function drawHexByOwnCoordinates(ctx, hex) {
     0.5 * (24 - hex.coordinates[1]) * config.canvasXDistance
   let y =
     config.boardHeight / 2 + (24 - hex.coordinates[1]) * config.canvasYDistance
-  drawHex(ctx, hex, x, y)
+  drawHex(ctx, hex, x, y, callback, isGrey)
 }
 
 export function drawValidAnimals(ctx, validAnimals) {

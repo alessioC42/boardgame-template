@@ -1,19 +1,22 @@
 export const animals = {
   fish: {
     displayName: "Lachs",
-    color: "#800000",
+    color: "blue",
   },
   bear: {
     displayName: "Bär",
-    color: "#800000",
+    color: "#3d251e",
   },
   deer: {
     displayName: "Hirsch",
-    color: "#800000",
+    color: "#765341",
   },
-  bird: { displayName: "Bussard", color: "#800000" },
+  bird: {
+    displayName: "Bussard",
+    color: "red",
+  },
   fox: {
     displayName: "Fuchs",
-    color: "#800000",
+    color: "orange",
   },
 }
