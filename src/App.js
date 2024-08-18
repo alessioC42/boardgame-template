@@ -62,8 +62,10 @@ function startGame(game) {
   matchIdElement.innerText = game?.matchId
 
   lobbyElement.classList.add("hidden")
-  overlayElement.classList.remove("hidden")
   appElement.classList.remove("hidden")
+
+  if (game?.matchId) overlayElement.classList.remove("hidden")
+  else overlayElement.classList.add("hidden")
 
   quitButton = resetElement(quitButton)
   quitButton.addEventListener("click", async () => {
