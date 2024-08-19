@@ -49,3 +49,18 @@ export function addCoordsToListIfNotAlreadyInList(list, coords) {
   list.push(coords)
   return list
 }
+export function cordsInCordsList(coords, coordsList) {
+  return coordsList.some((item) => item[0] == coords[0] && item[1] == coords[1])
+}
+
+export function countLongestSequence(list, validation) {
+  for (let i = list.length; i >= 0; i--) {
+    for (let j = 0; j <= list.length - i; j++) {
+      for (let n = j; n < j + i; n++) {
+        if (!validation(list[n])) break
+        return i
+      }
+    }
+  }
+  return 0
+}

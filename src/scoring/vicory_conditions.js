@@ -4,6 +4,7 @@ import {
   countAnimalList,
   getNeighbourAnimalsOfType,
   addCoordsToListIfNotAlreadyInList,
+  cordsInCordsList,
 } from "./scoring"
 
 export const foxConditions = [
@@ -109,9 +110,13 @@ export const fishConditions = [
     title: "Formationen",
     calculate: (board) => {
       let victoryPoints = 0
+      let alreadyUsedFishCoordinates = []
       for (let x = 0; x < board.length; x++) {
         for (let y = 0; y < board[x].length; y++) {
-          if (board[x][y].occupiedBy.displayName == "Lachs") {
+          if (
+            board[x][y].occupiedBy.displayName == "Lachs" &&
+            cordsInCordsList([x, y], alreadyUsedFishCoordinates)
+          ) {
             let coordsInChain = [[x, y]]
 
             let running = true
@@ -142,6 +147,8 @@ export const fishConditions = [
 
               if (chainLengthBeforeIteration == coordsInChain.length) break
             }
+            alreadyUsedFishCoordinates =
+              alreadyUsedFishCoordinates.concat(coordsInChain)
             let victoryPointScale = [0, 2, 5, 8, 12, 16, 20, 25]
             victoryPoints +=
               coordsInChain.length > 7
@@ -150,7 +157,82 @@ export const fishConditions = [
           }
         }
       }
+
       return victoryPoints
     },
   },
+]
+
+export const deerConditions = [
+  {
+    title: "Herden",
+    calculate: (board) => {
+      let victoryPoints = 0
+      let alreadyUsedFishCoordinates = []
+      for (let x = 0; x < board.length; x++) {
+        for (let y = 0; y < board[x].length; y++) {
+          if (
+            board[x][y].occupiedBy.displayName == "Hirsch" &&
+            cordsInCordsList([x, y], alreadyUsedFishCoordinates)
+          ) {
+            let coordsInChain = [[x, y]]
+
+            let running = true
+
+            while (running) {
+              let chainLengthBeforeIteration = coordsInChain.length
+              for (const coords of coordsInChain) {
+                let neighbourFishes = getNeighbourAnimalsOfType(
+                  board,
+                  coords,
+                  "Hirsch"
+                )
+
+                for (let newNeighbourCords of neighbourFishes) {
+                  addCoordsToListIfNotAlreadyInList(
+                    coordsInChain,
+                    newNeighbourCords
+                  )
+                }
+              }
+
+              if (chainLengthBeforeIteration == coordsInChain.length) break
+            }
+            alreadyUsedFishCoordinates =
+              alreadyUsedFishCoordinates.concat(coordsInChain)
+            let victoryPointScale = [0, 2, 4, 87, 10, 14, 18, 23, 28]
+            victoryPoints +=
+              coordsInChain.length > 7
+                ? 28
+                : victoryPointScale[coordsInChain.length]
+          }
+        }
+      }
+
+      return victoryPoints
+    },
+  },
+  /*
+  {
+    title: "Ringe",
+    calculate: (board) => {
+      for (let i = 6; i > 0; i--) {
+        for (let x = 0; x < board.length; x++) {
+          for (let y = 0; y < board[x].length; y++) {
+            let neighbourDeers = getNeighbourAnimalsOfType(
+              board,
+              [x, y],
+              "Hirsch"
+            )
+            if (neighbourDeers.length == i) {
+              let doubleNeighbourDeers = neighbourDeers.concat(neighbourDeers)
+              let longestSequence = countLongestSequence
+
+            }
+          }
+        }
+      }
+    },
+  },
+  */
 ]
