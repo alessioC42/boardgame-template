@@ -2,7 +2,14 @@
 
 import { animals } from "./models/animals"
 import { biomes } from "./models/biomes"
-import { INVALID_MOVE } from "boardgame.io/core"
+import { ActivePlayers, INVALID_MOVE } from "boardgame.io/core"
+import {
+  bussardConditions,
+  deerConditions,
+  fishConditions,
+  foxConditions,
+  bearConditions,
+} from "./scoring/vicory_conditions"
 
 /**  @type {Game} */
 export const Cascadia = {
@@ -143,6 +150,30 @@ export const Cascadia = {
       return G
     },
   },
+
+  endIf: ({ G, ctx }) => {
+    if (ctx.turn == 3 * ctx.numPlayers) {
+      let pointsMap = {}
+      for (let player of ctx.playOrder) {
+        pointsMap[player] = calcutlatePointsOfOnePlayer(player, G)
+      }
+      return { pointsMap }
+    }
+  },
+}
+
+function calcutlatePointsOfOnePlayer(playerID, G) {
+  let playerPoints =
+    0 +
+    foxConditions[0].calculate(G.boards[playerID]) +
+    playerPoints +
+    bearConditions[0].calculate(G.boards[playerID]) +
+    playerPoints +
+    bussardConditions[0].calculate(G.boards[playerID]) +
+    playerPoints +
+    deerConditions[0].calculate(G.boards[playerID]) +
+    playerPoints +
+    fishConditions[0].calculate(G.boards[playerID])
 }
 
 function changeOfferingsWhere(validation, G) {
