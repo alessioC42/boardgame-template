@@ -159,11 +159,11 @@ export const Cascadia = {
 
 function calcutlatePointsOfOnePlayer(playerID, G) {
   return (
-    foxConditions[0].calculate(G.boards[playerID]) +
-    bearConditions[0].calculate(G.boards[playerID]) +
-    // bussardConditions[0].calculate(G.boards[playerID]) +
-    deerConditions[0].calculate(G.boards[playerID]) +
-    fishConditions[0].calculate(G.boards[playerID])
+    foxConditions[0].calculate(G.boards[playerID]) + // tested
+    bearConditions[0].calculate(G.boards[playerID]) + // TODO: testing
+    bussardConditions[0].calculate(G.boards[playerID]) + // tested
+    deerConditions[0].calculate(G.boards[playerID]) + // tested
+    fishConditions[0].calculate(G.boards[playerID]) // TODO: testing
   )
 }
 
