@@ -190,6 +190,7 @@ export const deerConditions = [
             let running = true
 
             while (running) {
+              console.log(coordsInChain)
               let chainLengthBeforeIteration = coordsInChain.length
               for (const coords of coordsInChain) {
                 let neighbourFishes = getNeighbourAnimalsOfType(
@@ -197,7 +198,6 @@ export const deerConditions = [
                   coords,
                   "Hirsch"
                 )
-                console.log(neighbourFishes)
 
                 for (let newNeighbourCords of neighbourFishes) {
                   addCoordsToListIfNotAlreadyInList(

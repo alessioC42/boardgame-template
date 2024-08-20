@@ -1,11 +1,25 @@
 import { ctx, onClick } from "../canvas"
 import { config } from "./config"
 
-export function createPlayerFieldButtons(stateCtx, player, callback) {
-  ctx.fillStyle = "rgba(150, 150, 150, 0.7)"
-  ctx.fillRect(50, config.boardHeight - player * 75 - 150, 50, 50)
+export function createPlayerFieldButtons(
+  stateCtx,
+  player,
+  isOwnPlayer,
+  callback
+) {
+  let isActivePlayer = stateCtx.currentPlayer == stateCtx.playOrder[player]
 
-  ctx.fillStyle = "black"
+  ctx.beginPath()
+  ctx.fillStyle = "rgba(150, 150, 150, 0.7)"
+  ctx.rect(50, config.boardHeight - player * 75 - 150, 50, 50)
+  if (isOwnPlayer) {
+    ctx.strokeStyle = "black"
+    ctx.stroke()
+  }
+  ctx.fill()
+  ctx.closePath()
+
+  ctx.fillStyle = isActivePlayer ? "yellow" : "black"
   ctx.font = "30px serif"
   ctx.textAlign = "center"
   ctx.fillText(
@@ -16,8 +30,14 @@ export function createPlayerFieldButtons(stateCtx, player, callback) {
 
   onClick(50, config.boardHeight - player * 75 - 150, 50, 50, callback)
 }
-export function createPlayerFieldButtonsForEachPlayer(stateCtx, callback) {
+export function createPlayerFieldButtonsForEachPlayer(
+  stateCtx,
+  ownPlayerID,
+  callback
+) {
   for (let i = stateCtx.playOrder.length - 1; i >= 0; i--) {
-    createPlayerFieldButtons(stateCtx, i, () => callback(stateCtx.playOrder[i]))
+    createPlayerFieldButtons(stateCtx, i, ownPlayerID == i, () =>
+      callback(stateCtx.playOrder[i])
+    )
   }
 }

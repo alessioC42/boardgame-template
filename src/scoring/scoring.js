@@ -45,7 +45,7 @@ export function countAnimalList(list) {
 
 export function addCoordsToListIfNotAlreadyInList(list, coords) {
   for (let item of list) {
-    if (item[0] == coords[0] && item[1] == item[1]) {
+    if (item[0] == coords[0] && item[1] == coords[1]) {
       return
     }
   }

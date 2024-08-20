@@ -19,8 +19,12 @@ export function render(state, ctx, resetOnClicks, client) {
 
   ctx.fillStyle = "black"
   ctx.font = "30px serif"
-  ctx.textAlign = "left"
-  ctx.fillText(`Player: ${playerIDToRender}`, 50, config.boardHeight - 25)
+  ctx.textAlign = "center"
+  ctx.fillText(
+    `Schnitzel of Player: ${playerIDToRender}`,
+    (config.boardWidth / 7) * 3,
+    100
+  )
 
   let chooseFromOfferingAndPlaceOnBoardState = {
     selectedOffering: null,
@@ -136,8 +140,12 @@ export function render(state, ctx, resetOnClicks, client) {
   }
 
   // PlayerBoards choosing
-  createPlayerFieldButtonsForEachPlayer(state.ctx, (player) => {
-    playerIDToRender = player
-    render(state, ctx, resetOnClicks, client)
-  })
+  createPlayerFieldButtonsForEachPlayer(
+    state.ctx,
+    client.playerID,
+    (player) => {
+      playerIDToRender = player
+      render(state, ctx, resetOnClicks, client)
+    }
+  )
 }

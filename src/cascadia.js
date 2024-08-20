@@ -151,7 +151,7 @@ export const Cascadia = {
       for (let player of ctx.playOrder) {
         pointsMap[player] = calcutlatePointsOfOnePlayer(player, G)
       }
-      console.log(pointsMap)
+      console.log(JSON.stringify(pointsMap))
       return { pointsMap }
     }
   },
@@ -161,7 +161,7 @@ function calcutlatePointsOfOnePlayer(playerID, G) {
   return (
     foxConditions[0].calculate(G.boards[playerID]) +
     bearConditions[0].calculate(G.boards[playerID]) +
-    bussardConditions[0].calculate(G.boards[playerID]) +
+    // bussardConditions[0].calculate(G.boards[playerID]) +
     deerConditions[0].calculate(G.boards[playerID]) +
     fishConditions[0].calculate(G.boards[playerID])
   )
@@ -194,7 +194,8 @@ function intitialAnimals() {
   let animalsStack = []
   for (let animal in animals) {
     for (let i = 0; i < 20; i++) {
-      animalsStack.push(animals.deer)
+      animalsStack.push(animals.bird)
+      animalsStack.push(animals.fox)
     }
   }
   return shuffle(animalsStack)
@@ -208,7 +209,7 @@ function initialHexCells() {
       createHexCell(
         biomes.water,
         biomes.mountains,
-        [animals.deer, animals.bear],
+        [animals.bird, animals.fox],
         4
       )
     )
