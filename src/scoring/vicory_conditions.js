@@ -14,6 +14,8 @@ export const foxConditions = [
       let points = 0
       for (let x = 0; x < board[0].length; x++) {
         for (let y = 0; y < board[1].length; y++) {
+          if (board[x][y] == null) continue
+          if (board[x][y].occupiedBy == null) continue
           if (board[x][y].occupiedBy.displayName == "Fuchs") {
             let neighbourAnimals = getNeighbourAnimals(board, [x, y])
             neighbourAnimals = neighbourAnimals.filter(
@@ -42,6 +44,8 @@ export const bearConditions = [
       let pairCounts = 0
       for (let x = 0; x < board.length; x++) {
         for (let y = 0; y < board[x].length; y++) {
+          if (board[x][y] == null) continue
+          if (board[x][y].occupiedBy == null) continue
           if (board[x][y].occupiedBy.displayName == "Bär") {
             let neighbourAnimals = getNeighbourAnimals(board, [x, y])
             if (countAnimalList(neighbourAnimals)["Bär"] == 1) {
@@ -83,6 +87,8 @@ export const bussardConditions = [
       let foundBussards = 0
       for (let x = 0; x < board.length; x++) {
         for (let y = 0; y < board[x].length; y++) {
+          if (board[x][y] == null) continue
+          if (board[x][y].occupiedBy == null) continue
           if (board[x][y].occupiedBy.displayName == "Bussard") {
             let neighbourAnimals = getNeighbourAnimals(board, [x, y])
             let bussardInList = false
@@ -113,6 +119,8 @@ export const fishConditions = [
       let alreadyUsedFishCoordinates = []
       for (let x = 0; x < board.length; x++) {
         for (let y = 0; y < board[x].length; y++) {
+          if (board[x][y] == null) continue
+          if (board[x][y].occupiedBy == null) continue
           if (
             board[x][y].occupiedBy.displayName == "Lachs" &&
             cordsInCordsList([x, y], alreadyUsedFishCoordinates)
@@ -171,9 +179,11 @@ export const deerConditions = [
       let alreadyUsedFishCoordinates = []
       for (let x = 0; x < board.length; x++) {
         for (let y = 0; y < board[x].length; y++) {
+          if (board[x][y] == null) continue
+          if (board[x][y].occupiedBy == null) continue
           if (
             board[x][y].occupiedBy.displayName == "Hirsch" &&
-            cordsInCordsList([x, y], alreadyUsedFishCoordinates)
+            !cordsInCordsList([x, y], alreadyUsedFishCoordinates)
           ) {
             let coordsInChain = [[x, y]]
 
@@ -187,6 +197,7 @@ export const deerConditions = [
                   coords,
                   "Hirsch"
                 )
+                console.log(neighbourFishes)
 
                 for (let newNeighbourCords of neighbourFishes) {
                   addCoordsToListIfNotAlreadyInList(
@@ -200,7 +211,8 @@ export const deerConditions = [
             }
             alreadyUsedFishCoordinates =
               alreadyUsedFishCoordinates.concat(coordsInChain)
-            let victoryPointScale = [0, 2, 4, 87, 10, 14, 18, 23, 28]
+            console.log(coordsInChain.length)
+            let victoryPointScale = [0, 2, 4, 7, 10, 14, 18, 23, 28]
             victoryPoints +=
               coordsInChain.length > 7
                 ? 28

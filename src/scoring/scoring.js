@@ -9,6 +9,7 @@ export function getNeighbourAnimals(board, coordinates) {
   let neighbourCoordinates = getNeighbourCoordinates(coordinates)
   let animals = []
   for (let nC of neighbourCoordinates) {
+    if (board[nC[0]][nC[1]] == null) continue
     if (board[nC[0]][nC[1]].occupiedBy != null) {
       animals.push(board[nC[0]][nC[1]].occupiedBy)
     }
@@ -22,8 +23,10 @@ export function getNeighbourAnimalsOfType(board, coordinates, displayName) {
   let neighbourCoordinates = getNeighbourCoordinates(coordinates)
   for (let nC of neighbourCoordinates) {
     const [x, y] = nC
-    if (board[x][y].displayName == displayName) {
-      result.push(coordinates)
+    if (board[x][y] == null) continue
+    if (board[x][y].occupiedBy == null) continue
+    if (board[x][y].occupiedBy.displayName.toString() == displayName) {
+      result.push(nC)
     }
   }
   return result

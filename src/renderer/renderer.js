@@ -6,7 +6,9 @@ import {
 } from "./draw_hex"
 import { config } from "./config"
 import { isAdjacentToBoard } from "../cascadia"
+import { createPlayerFieldButtonsForEachPlayer } from "./createButtons"
 
+let playerIDToRender = "0"
 // eslint-disable-next-line no-unused-vars
 export function render(state, ctx, resetOnClicks, client) {
   // remove everything
@@ -18,11 +20,7 @@ export function render(state, ctx, resetOnClicks, client) {
   ctx.fillStyle = "black"
   ctx.font = "30px serif"
   ctx.textAlign = "left"
-  ctx.fillText(
-    `Player: ${state.ctx.currentPlayer}`,
-    50,
-    config.boardHeight - 25
-  )
+  ctx.fillText(`Player: ${playerIDToRender}`, 50, config.boardHeight - 25)
 
   let chooseFromOfferingAndPlaceOnBoardState = {
     selectedOffering: null,
@@ -30,7 +28,6 @@ export function render(state, ctx, resetOnClicks, client) {
   }
 
   const renderedHexCallback = (hex) => {
-    console.log(hex.coordinates)
     if (hex.occupiedBy != null) return
     if (
       chooseFromOfferingAndPlaceOnBoardState.selectedOffering == null ||
@@ -69,18 +66,15 @@ export function render(state, ctx, resetOnClicks, client) {
 
   resetOnClicks()
   //renders board on canvas
-  for (let x = 0; x < state.G.boards[state.ctx.currentPlayer].length; x++) {
-    for (let y = 0; y < state.G.boards[state.ctx.currentPlayer].length; y++) {
-      if (state.G.boards[state.ctx.currentPlayer][x][y] !== null) {
+  for (let x = 0; x < state.G.boards[playerIDToRender].length; x++) {
+    for (let y = 0; y < state.G.boards[playerIDToRender].length; y++) {
+      if (state.G.boards[playerIDToRender][x][y] !== null) {
         drawHexByOwnCoordinates(
           ctx,
-          state.G.boards[state.ctx.currentPlayer][x][y],
-          () =>
-            renderedHexCallback(state.G.boards[state.ctx.currentPlayer][x][y])
+          state.G.boards[playerIDToRender][x][y],
+          () => renderedHexCallback(state.G.boards[playerIDToRender][x][y])
         )
-      } else if (
-        isAdjacentToBoard(state.G.boards[state.ctx.currentPlayer], [x, y])
-      ) {
+      } else if (isAdjacentToBoard(state.G.boards[playerIDToRender], [x, y])) {
         drawHexOutlineByOwnCoordinates(ctx, [x, y], () => {
           if (chooseFromOfferingAndPlaceOnBoardState.selectedOffering == null) {
             alert("No offering selected")
@@ -118,9 +112,8 @@ export function render(state, ctx, resetOnClicks, client) {
   //renders Offering on canvas
   let dimension = 100
 
-  for (let i = 0; i < 4; i++) {
-    console.log(state.G.offering.length)
-    try {
+  if (state.ctx.currentPlayer)
+    for (let i = 0; i < 4; i++) {
       drawHex(ctx, state.G.offering[i].cell, 100 + i * dimension, 100, () => {
         if (chooseFromOfferingAndPlaceOnBoardState.selectedOffering != null) {
           render(state, ctx, resetOnClicks, client)
@@ -132,16 +125,15 @@ export function render(state, ctx, resetOnClicks, client) {
           ctx.fill()
         }
       })
-    } catch (e) {
-      console.error(e)
-      console.log(state)
-      console.log(state.G)
-      console.log(state.G.offering)
-      console.log(state.G.offering[i])
+
+      ctx.translate(100 + i * dimension, 200)
+      drawOccupyingAnimal(ctx, state.G.offering[i].animal)
+      ctx.translate(-(100 + i * dimension), -200)
     }
 
-    ctx.translate(100 + i * dimension, 200)
-    drawOccupyingAnimal(ctx, state.G.offering[i].animal)
-    ctx.translate(-(100 + i * dimension), -200)
-  }
+  // PlayerBoards choosing
+  createPlayerFieldButtonsForEachPlayer(state.ctx, (player) => {
+    playerIDToRender = player
+    render(state, ctx, resetOnClicks, client)
+  })
 }

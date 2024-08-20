@@ -45,7 +45,6 @@ export function drawHex(ctx, hex, x, y, callback, isGrey = false) {
 
   ctx.rotate(-translateRotation)
 
-  console.log(hex.occupiedBy)
   if (hex.occupiedBy == null) {
     drawValidAnimals(ctx, hex.validAnimals)
   } else {
