@@ -112,9 +112,12 @@ export function render(state, ctx, resetOnClicks, client) {
   //renders Offering on canvas
   let dimension = 100
 
-  if (state.ctx.currentPlayer)
-    for (let i = 0; i < 4; i++) {
-      drawHex(ctx, state.G.offering[i].cell, 100 + i * dimension, 100, () => {
+  for (let i = 0; i < 4; i++) {
+    drawHex(ctx, state.G.offering[i].cell, 100 + i * dimension, 100, () => {
+      if (
+        state.ctx.currentPlayer == client.playerID &&
+        state.ctx.currentPlayer == playerIDToRender
+      ) {
         if (chooseFromOfferingAndPlaceOnBoardState.selectedOffering != null) {
           render(state, ctx, resetOnClicks, client)
         } else {
@@ -124,12 +127,13 @@ export function render(state, ctx, resetOnClicks, client) {
           ctx.rect(100 + i * dimension - config.hexRadius, 0, 100, 250)
           ctx.fill()
         }
-      })
+      }
+    })
 
-      ctx.translate(100 + i * dimension, 200)
-      drawOccupyingAnimal(ctx, state.G.offering[i].animal)
-      ctx.translate(-(100 + i * dimension), -200)
-    }
+    ctx.translate(100 + i * dimension, 200)
+    drawOccupyingAnimal(ctx, state.G.offering[i].animal)
+    ctx.translate(-(100 + i * dimension), -200)
+  }
 
   // PlayerBoards choosing
   createPlayerFieldButtonsForEachPlayer(state.ctx, (player) => {
