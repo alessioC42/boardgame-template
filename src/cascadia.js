@@ -10,17 +10,19 @@ import {
   foxConditions,
   bearConditions,
 } from "./scoring/vicory_conditions"
+import { init } from "node-persist"
 
 /**  @type {Game} */
 export const Cascadia = {
   // Tutorial things go here
   setup: function setup(foo) {
-    let boards = {}
-    for (let player of foo.ctx.playOrder) {
-      boards[player] = createInitialBoard()
-    }
     let animalStack = intitialAnimals()
     let hexStack = initialHexCells()
+    let boards = {}
+    for (let player of foo.ctx.playOrder) {
+      boards[player] = createInitialBoard(hexStack)
+    }
+    
 
     let pineCones = {}
     for (let player of foo.ctx.playOrder) {
@@ -146,7 +148,7 @@ export const Cascadia = {
   },
 
   endIf: ({ G, ctx }) => {
-    if (ctx.turn == 7 * ctx.numPlayers + 1) {
+    if (ctx.turn == 20 * ctx.numPlayers + 1) {
       let pointsMap = {}
       for (let player of ctx.playOrder) {
         pointsMap[player] = calcutlatePointsOfOnePlayer(player, G)
@@ -160,7 +162,7 @@ export const Cascadia = {
 function calcutlatePointsOfOnePlayer(playerID, G) {
   return (
     foxConditions[0].calculate(G.boards[playerID]) + // tested
-    bearConditions[0].calculate(G.boards[playerID]) + // TODO: testing
+    bearConditions[0].calculate(G.boards[playerID]) + // tested
     bussardConditions[0].calculate(G.boards[playerID]) + // tested
     deerConditions[0].calculate(G.boards[playerID]) + // tested
     fishConditions[0].calculate(G.boards[playerID]) // TODO: testing
@@ -194,8 +196,7 @@ function intitialAnimals() {
   let animalsStack = []
   for (let animal in animals) {
     for (let i = 0; i < 20; i++) {
-      animalsStack.push(animals.bird)
-      animalsStack.push(animals.fox)
+      animalsStack.push(animals[animal])
     }
   }
   return shuffle(animalsStack)
@@ -203,14 +204,22 @@ function intitialAnimals() {
 
 function initialHexCells() {
   let cells = []
-
   for (let i = 0; i < 100; i++) {
+    let arr = []
+    let animalArray = [animals.bear, animals.bird, animals.deer, animals.fish, animals.fox]
+      animalArray = shuffle(animalArray)
+    for (let b = 0; b < random([1, 2, 3]); b++) {
+
+      arr.push(animalArray.pop())
+    }
+
     cells.push(
       createHexCell(
-        biomes.water,
-        biomes.mountains,
-        [animals.bird, animals.fox],
-        4
+        randomDict(biomes),
+        randomDict(biomes),
+        arr,
+        random([0, 1, 2, 3, 4, 5]),
+        null
       )
     )
   }
@@ -246,7 +255,7 @@ function shuffle(array) {
   return array
 }
 
-function createInitialBoard() {
+function createInitialBoard(hexStack) {
   let board = []
   for (let x = 0; x < 50; x++) {
     board[x] = []
@@ -254,30 +263,15 @@ function createInitialBoard() {
       board[x][y] = null
     }
   }
-  board[24][24] = createHexCell(
-    biomes.forest,
-    biomes.desert,
-    [animals.deer, animals.bear],
-    0,
-    null,
-    [24, 24]
-  )
-  board[25][24] = createHexCell(
-    biomes.water,
-    biomes.mountains,
-    [animals.deer, animals.bear],
-    0,
-    null,
-    [25, 24]
-  )
-  board[25][23] = createHexCell(
-    biomes.forest,
-    biomes.forest,
-    [animals.deer],
-    0,
-    null,
-    [25, 23]
-  )
+  board[24][24] = hexStack.pop()
+  board[24][24].coordinates = [24,24]
+
+  board[25][24] = hexStack.pop()
+  board[25][24].coordinates = [25,24]
+
+  board[25][23] = hexStack.pop()
+  board[25][23].coordinates = [25,23]
+
   return board
 }
 
@@ -334,4 +328,14 @@ export function getNeighbourCoordinates(coordinates) {
     [x + 1, y - 1],
     [x + 1, y],
   ]
+}
+
+export function random(list) {
+  return list[Math.floor(Math.random() * list.length)]
+}
+
+export function randomDict(dict) {
+  let keys = Object.keys(dict)
+  let key = random(keys)
+  return dict[key]
 }

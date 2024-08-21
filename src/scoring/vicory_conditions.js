@@ -52,6 +52,8 @@ export const bearConditions = [
               let possibleCoords = getNeighbourCoordinates([x, y])
               for (let coordinates of possibleCoords) {
                 const [pX, pY] = coordinates
+                if (board[pX][pY] == null) continue
+                if (board[pX][pY].occupiedBy == null) continue
                 if (board[pX][pY].occupiedBy.displayName != "Bär") continue
                 let animalList = getNeighbourAnimals(board, coordinates)
                 let counts = countAnimalList(animalList)
@@ -123,13 +125,15 @@ export const fishConditions = [
           if (board[x][y].occupiedBy == null) continue
           if (
             board[x][y].occupiedBy.displayName == "Lachs" &&
-            cordsInCordsList([x, y], alreadyUsedFishCoordinates)
+            !cordsInCordsList([x, y], alreadyUsedFishCoordinates)
           ) {
             let coordsInChain = [[x, y]]
 
             let running = true
+            let valid = true
 
             while (running) {
+              console.log(`fish coordinates: ${alreadyUsedFishCoordinates}`)
               let chainLengthBeforeIteration = coordsInChain.length
               for (const coords of coordsInChain) {
                 let neighbourFishes = getNeighbourAnimalsOfType(
@@ -138,9 +142,15 @@ export const fishConditions = [
                   "Lachs"
                 )
                 let fishCount = neighbourFishes.length
-
+                console.log(fishCount)
                 if (fishCount > 2) {
-                  running = false
+                  valid = false
+                  for (let newNeighbourCords of neighbourFishes) {
+                    addCoordsToListIfNotAlreadyInList(
+                      coordsInChain,
+                      newNeighbourCords
+                    )
+                  }
                   break
                 }
                 if ([1, 2].includes(fishCount)) {
@@ -152,16 +162,22 @@ export const fishConditions = [
                   }
                 }
               }
+              console.log(chainLengthBeforeIteration)
+              console.log(coordsInChain.length)
 
               if (chainLengthBeforeIteration == coordsInChain.length) break
             }
+            console.log(alreadyUsedFishCoordinates)
+            console.log(coordsInChain)
             alreadyUsedFishCoordinates =
               alreadyUsedFishCoordinates.concat(coordsInChain)
-            let victoryPointScale = [0, 2, 5, 8, 12, 16, 20, 25]
-            victoryPoints +=
-              coordsInChain.length > 7
-                ? 25
-                : victoryPointScale[coordsInChain.length]
+            if (valid) {
+              let victoryPointScale = [0, 2, 5, 8, 12, 16, 20, 25]
+              victoryPoints +=
+                coordsInChain.length > 7
+                  ? 25
+                  : victoryPointScale[coordsInChain.length]
+            }
           }
         }
       }

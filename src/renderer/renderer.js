@@ -7,6 +7,7 @@ import {
 import { config } from "./config"
 import { isAdjacentToBoard } from "../cascadia"
 import { createPlayerFieldButtonsForEachPlayer } from "./createButtons"
+import { renderVictoryCard } from './victory_card'
 
 let playerIDToRender = "0"
 // eslint-disable-next-line no-unused-vars
@@ -148,4 +149,6 @@ export function render(state, ctx, resetOnClicks, client) {
       render(state, ctx, resetOnClicks, client)
     }
   )
+
+  renderVictoryCard(ctx, null)
 }
