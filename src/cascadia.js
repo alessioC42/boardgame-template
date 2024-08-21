@@ -148,7 +148,7 @@ export const Cascadia = {
   },
 
   endIf: ({ G, ctx }) => {
-    if (ctx.turn == 20 * ctx.numPlayers + 1) {
+    if (ctx.turn == 1 * ctx.numPlayers + 1) {
       let pointsMap = {}
       for (let player of ctx.playOrder) {
         pointsMap[player] = calcutlatePointsOfOnePlayer(player, G)
