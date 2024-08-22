@@ -1,6 +1,8 @@
 import { LobbyClient } from "boardgame.io/client"
 
-const lobbyClient = new LobbyClient({ server: "http://localhost:8000" })
+const lobbyClient = new LobbyClient({
+  server: import.meta.env.VITE_MUTLIPLAYER_SERVER ?? "http://localhost:8000",
+})
 
 function resetElement(el) {
   const newElement = el.cloneNode(true)
@@ -77,7 +79,7 @@ export function setupLobby(isMultiplayer, createGameClient) {
         const joinResult = await lobbyClient.joinMatch(
           "default",
           createMatchResult.matchID,
-          { playerName: "Player" }
+          { playerName: "Player" },
         )
         if (!joinResult?.playerID) return
 
@@ -96,14 +98,14 @@ export function setupLobby(isMultiplayer, createGameClient) {
 
         const foundGame = await lobbyClient.getMatch(
           "default",
-          joinIdElement.value
+          joinIdElement.value,
         )
         if (!foundGame?.matchID) return
 
         const joinResult = await lobbyClient.joinMatch(
           "default",
           foundGame.matchID,
-          { playerName: "Player" }
+          { playerName: "Player" },
         )
         if (!joinResult?.playerID) return
 
