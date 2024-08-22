@@ -6,7 +6,7 @@ import {
 } from "./draw_hex"
 import { config } from "./config"
 import { isAdjacentToBoard } from "../cascadia"
-import { createPlayerFieldButtonsForEachPlayer, createVictoryConditionButtons } from "./createButtons"
+import { animalExchangeButtonIfThree, createPlayerFieldButtonsForEachPlayer, createVictoryConditionButtons } from "./createButtons"
 import { renderVictoryCard } from './victory_card'
 import { cards } from './victory_condition_cards'
 
@@ -26,6 +26,11 @@ export function render(state, ctx, resetOnClicks, client) {
     `Field of Player: ${playerIDToRender}`,
     (config.boardWidth / 2-50) ,
     100
+  )
+  ctx.fillText(
+    `You are Player: ${client.playerID}`,
+    (config.boardWidth / 2-50) ,
+    65
   )
 
   let chooseFromOfferingAndPlaceOnBoardState = {
@@ -154,6 +159,9 @@ export function render(state, ctx, resetOnClicks, client) {
   if (state.ctx.gameover != undefined) {
     renderVictoryCard(ctx, state.ctx.gameover)
   }
+
+
+  animalExchangeButtonIfThree(ctx, ()=>client.moves.changeAnimalOffering())
 
 
   for (let i = 0; i < cards.length; i++){

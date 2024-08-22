@@ -63,3 +63,27 @@ export function createVictoryConditionButtons(ctx, cardNumber, rerender) {
     })
   })
 }
+
+export function animalExchangeButtonIfThree(ctx, callback) {
+  let xPosition = config.boardWidth / 3 - 60
+  let yPosition = 50
+  ctx.beginPath()
+  ctx.fillStyle = "rgba(150, 150, 150, 0.7)"
+  ctx.rect(xPosition, yPosition, 75, 75)
+
+  ctx.fill()
+  ctx.closePath()
+
+
+  ctx.fillStyle = "black"
+  ctx.font = "25px serif"
+  ctx.textAlign = "center"
+  ctx.fillText(
+    `${"redo3"}`,
+    xPosition+40,
+    yPosition+40
+  )
+
+
+  onClick(xPosition, yPosition, 75, 75, callback)
+}

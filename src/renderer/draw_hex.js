@@ -53,6 +53,7 @@ export function drawHex(ctx, hex, x, y, callback, isGrey = false) {
   drawCoordinates(ctx, hex.coordinates)
 
   const size = [config.hexRadius, config.hexRadius / 2]
+  ctx.fillStyle = "black"
   onClick(x - size[0] / 2, y - size[1] / 2, size[0], size[1], callback)
 
   ctx.translate(-x, -y)
