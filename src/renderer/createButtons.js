@@ -1,5 +1,7 @@
 import { ctx, onClick } from "../canvas"
 import { config } from "./config"
+import { drawOccupyingAnimal } from "./draw_hex"
+import { cards, renderVictoryConditionCard} from "./victory_condition_cards"
 
 export function createPlayerFieldButtons(
   stateCtx,
@@ -40,4 +42,24 @@ export function createPlayerFieldButtonsForEachPlayer(
       callback(stateCtx.playOrder[i])
     )
   }
+}
+
+export function createVictoryConditionButtons(ctx, cardNumber, rerender) {
+  ctx.beginPath()
+  ctx.fillStyle = "rgba(150, 150, 150, 0.7)"
+  ctx.rect(config.boardWidth-cardNumber*75-100, 25, 50, 50)
+
+  ctx.fill()
+  ctx.closePath()
+
+  ctx.translate(config.boardWidth-cardNumber*75-100+25, 50)
+  drawOccupyingAnimal(ctx, cards[cardNumber].animal)
+  ctx.translate(-(config.boardWidth-cardNumber*75-100+25), -50)
+
+  onClick(config.boardWidth - cardNumber * 75-100, 25, 50, 50, () => {
+    renderVictoryConditionCard(ctx, cards[cardNumber])
+    onClick(0, 0, config.boardWidth, config.boardHeight, () => {
+      rerender()
+    })
+  })
 }

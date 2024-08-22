@@ -71,10 +71,10 @@ canvas.addEventListener(
   false,
 )
 
-export function drawPicture(ctx, path, ...args) {
+export function drawPicture(dctx, path, ...args) {
   const img = new Image()
   img.onload = function () {
-    ctx.drawImage(img, ...args)
+    dctx.drawImage(img, ...args)
   }
   img.src = "/img/" + path
 }

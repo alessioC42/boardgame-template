@@ -6,8 +6,9 @@ import {
 } from "./draw_hex"
 import { config } from "./config"
 import { isAdjacentToBoard } from "../cascadia"
-import { createPlayerFieldButtonsForEachPlayer } from "./createButtons"
+import { createPlayerFieldButtonsForEachPlayer, createVictoryConditionButtons } from "./createButtons"
 import { renderVictoryCard } from './victory_card'
+import { cards } from './victory_condition_cards'
 
 let playerIDToRender = "0"
 // eslint-disable-next-line no-unused-vars
@@ -22,8 +23,8 @@ export function render(state, ctx, resetOnClicks, client) {
   ctx.font = "30px serif"
   ctx.textAlign = "center"
   ctx.fillText(
-    `Schnitzel of Player: ${playerIDToRender}`,
-    (config.boardWidth / 7) * 3,
+    `Field of Player: ${playerIDToRender}`,
+    (config.boardWidth / 2-50) ,
     100
   )
 
@@ -152,5 +153,10 @@ export function render(state, ctx, resetOnClicks, client) {
 
   if (state.ctx.gameover != undefined) {
     renderVictoryCard(ctx, state.ctx.gameover)
+  }
+
+
+  for (let i = 0; i < cards.length; i++){
+    createVictoryConditionButtons(ctx, i, ()=>render(state, ctx, resetOnClicks, client))
   }
 }
