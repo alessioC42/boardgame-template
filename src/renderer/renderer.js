@@ -150,8 +150,7 @@ export function render(state, ctx, resetOnClicks, client) {
     }
   )
 
-  console.log(state)
-  if (state.ctx.gameover && state.ctx.pointsMap) {
-    renderVictoryCard(ctx, state.ctx.pointsMap)
+  if (state.ctx.gameover != undefined) {
+    renderVictoryCard(ctx, state.ctx.gameover)
   }
 }

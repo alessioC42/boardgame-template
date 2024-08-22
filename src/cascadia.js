@@ -154,7 +154,7 @@ export const Cascadia = {
         pointsMap[player] = calcutlatePointsOfOnePlayer(player, G)
       }
       console.log(JSON.stringify(pointsMap))
-      return { pointsMap }
+      return  pointsMap
     }
   },
 }
