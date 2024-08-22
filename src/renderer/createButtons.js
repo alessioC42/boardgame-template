@@ -56,8 +56,14 @@ export function createVictoryConditionButtons(ctx, cardNumber, rerender) {
   drawOccupyingAnimal(ctx, cards[cardNumber].animal)
   ctx.translate(-(config.boardWidth-cardNumber*75-100+25), -50)
 
-  onClick(config.boardWidth - cardNumber * 75-100, 25, 50, 50, () => {
-    renderVictoryConditionCard(ctx, cards[cardNumber])
+  let onlyDelete = true
+  onClick(config.boardWidth - cardNumber * 75 - 100, 25, 50, 50, () => {
+  
+    if (onlyDelete) {
+      renderVictoryConditionCard(ctx, cards[cardNumber])
+      onlyDelete = false
+    }
+    
     onClick(0, 0, config.boardWidth, config.boardHeight, () => {
       rerender()
     })
@@ -79,7 +85,7 @@ export function animalExchangeButtonIfThree(ctx, callback) {
   ctx.font = "25px serif"
   ctx.textAlign = "center"
   ctx.fillText(
-    `${"redo3"}`,
+    `${"redo"}`,
     xPosition+40,
     yPosition+40
   )
