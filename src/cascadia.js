@@ -36,7 +36,9 @@ export const Cascadia = {
         animal: animalStack.pop(),
       })
     }
-    return { boards, animalStack, hexStack, offering, pineCones }
+    let artificialG = { boards, animalStack, hexStack, offering, pineCones }
+    ensureNoOverpopulation(artificialG)
+    return artificialG
   },
 
   moves: {
@@ -86,6 +88,8 @@ export const Cascadia = {
       coordiantesAnimalPlacement,
       placeAnimal
     ) => {
+
+      ensureNoOverpopulation (G)
       const [newHexX, newHexY] = coordinatesHexPlacement
       if (!isAdjacentToBoard(G.boards[playerID], coordinatesHexPlacement))
         return INVALID_MOVE
@@ -148,7 +152,7 @@ export const Cascadia = {
   },
 
   endIf: ({ G, ctx }) => {
-    if (ctx.turn == 1 * ctx.numPlayers + 1) {
+    if (ctx.turn == 20 * ctx.numPlayers + 1) {
       let pointsMap = {}
       for (let player of ctx.playOrder) {
         pointsMap[player] = calcutlatePointsOfOnePlayer(player, G)
@@ -184,9 +188,9 @@ function changeOfferingsWhere(validation, G) {
 
 function ensureNoOverpopulation(G) {
   while (
-    G.offering[0].animal == G.offering[1].animal &&
-    G.offering[2].animal == G.offering[3].animal &&
-    G.offering[1].animal == G.offering[2].animal
+    G.offering[0].animal.displayName == G.offering[1].animal.displayName &&
+    G.offering[2].animal.displayName == G.offering[3].animal.displayName &&
+    G.offering[1].animal.displayName == G.offering[2].animal.displayName
   ) {
     changeOfferingsWhere(() => true, G)
   }
